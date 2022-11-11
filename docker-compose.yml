@@ -1,0 +1,80 @@
+version: '2'
+services:
+  pmm-server:
+    image: percona/pmm-server:2.8
+    container_name: pmm-server
+    ports:
+      - '81:80'
+    restart: always
+    volumes:
+      - /opt/prometheus/data
+      - /opt/consul-data
+      - /var/lib/mysql
+      - /var/lib/grafana
+    networks:
+      - percona-xtradb-cluster-network
+  percona-xtradb-cluster-node1:
+    restart: always
+    image:  alekseifilippov999/percona-xtradb-cluster-extended:1.0
+    container_name: percona-xtradb-cluster-node1
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - CLUSTER_NAME=pxcluster1
+      - PMM_SERVER_NAME=pmm-server
+      - MYSQL_NODE_NAME=node1
+    networks:
+      - percona-xtradb-cluster-network
+    ports:
+      - "3306"
+      - "4444"
+      - "4567"
+      - "4568"
+    volumes:
+      - /var/lib/mysql
+    depends_on:
+      - pmm-server
+  percona-xtradb-cluster-node2:
+    restart: always
+    image: alekseifilippov999/percona-xtradb-cluster-extended:1.0
+    container_name: percona-xtradb-cluster-node2
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - CLUSTER_NAME=pxcluster1
+      - CLUSTER_JOIN=percona-xtradb-cluster-node1
+      - PMM_SERVER_NAME=pmm-server
+      - MYSQL_NODE_NAME=node2
+    networks:
+      - percona-xtradb-cluster-network
+    ports:
+      - "3306"
+      - "4444"
+      - "4567"
+      - "4568"
+    volumes:
+      - /var/lib/mysql
+    depends_on:
+      - percona-xtradb-cluster-node1
+  percona-xtradb-cluster-node3:
+    restart: always
+    image: alekseifilippov999/percona-xtradb-cluster-extended:1.0
+    container_name: percona-xtradb-cluster-node3
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - CLUSTER_NAME=pxcluster1
+      - CLUSTER_JOIN=percona-xtradb-cluster-node1
+      - PMM_SERVER_NAME=pmm-server
+      - MYSQL_NODE_NAME=node3
+    networks:
+      - percona-xtradb-cluster-network
+    ports:
+      - "3306"
+      - "4444"
+      - "4567"
+      - "4568"
+    volumes:
+      - /var/lib/mysql
+    depends_on:
+      - percona-xtradb-cluster-node1
+networks:
+  percona-xtradb-cluster-network:
+    driver: bridge
