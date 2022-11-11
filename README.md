@@ -5,7 +5,7 @@ Test work
 Не реализовано до конца обновление конфигурации pmm-агента и регистрация MYSQL на PMM сервере. Необходимо вручную после поднятия контейнеров зайти на каждую ноду и выполнить следующие команды:
  1) sudo  pmm-agent --config-file=/pmm-agent.yaml
  2) открыть новую сессию терминала и в ней выполнить
- sudo pmm-admin add mysql --username=root --password=root --tls --tls-skip-verify --service-name="$MYSQL_NODE_NAME" --host=127.0.0.1 --port=3306
+ sudo pmm-admin add mysql --username=root --password=root --tls --tls-skip-verify --service-name="$MYSQL_NODE_NAME" --host=127.0.0.1 --port=3306.
  После этого пойдут метрики на PMM-сервер, пароль оставить admin/admin (в  переменную не выделен).
  
 
